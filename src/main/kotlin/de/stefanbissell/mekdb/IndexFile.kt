@@ -19,7 +19,9 @@ fun createIndexFile(mechs: List<MechEntry>) {
         }
         body {
             div(classes = "filters") {
-                input(classes = "search", type = InputType.text) {}
+                input(classes = "search", type = InputType.text) {
+                    attributes["placeholder"] = "Search..."
+                }
             }
             table {
                 thead {

@@ -1,5 +1,5 @@
 
-const textSearch = document.querySelector(".search");
+const textSearch = document.querySelector(".filters .search");
 textSearch.value = "";
 
 textSearch.oninput = () => {
