@@ -48,6 +48,12 @@ private fun readMechFile(path: String, stream: InputStream): MechEntry {
 }
 
 private fun storeRecordSheet(entry: MechEntry) {
+    val file = File("webpage/mechs/${entry.path}/${entry.filename}.pdf")
+    if (file.exists()) {
+        return
+    }
+    file.parentFile.mkdirs()
+
     val options = RecordSheetOptions()
         .also {
             it.paperSize = PaperSize.ISO_A4
@@ -61,8 +67,6 @@ private fun storeRecordSheet(entry: MechEntry) {
     )
     val stream = pdf.exportPDF(0, PageFormat().also { it.paper = options.paperSize.createPaper() })
 
-    val file = File("webpage/mechs/${entry.path}/${entry.filename}.pdf")
-    file.parentFile.mkdirs()
     val out = FileOutputStream(file)
 
     out.use {
