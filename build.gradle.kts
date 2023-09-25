@@ -14,11 +14,18 @@ group = "de.stefanbissell.mekdb"
 version = "1.0"
 
 repositories {
+    maven {
+        url = uri("https://github.com/MegaMek/mavenrepo/raw/master")
+    }
     mavenCentral()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
-
+    implementation("org.megamek:megamek:0.49.15-SNAPSHOT")
+    implementation("org.megamek:megameklab:0.49.15-SNAPSHOT")
 }
 
 application {
