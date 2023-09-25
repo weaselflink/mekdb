@@ -30,6 +30,7 @@ fun createIndexFile(mechs: List<MechEntry>) {
                 select(classes = "level") {
                     option { +"All" }
                     option { +"Int" }
+                    option { +"Std" }
                     option { +"Adv" }
                     option { +"Exp" }
                     option { +"Un" }
