@@ -26,6 +26,7 @@ repositories {
 dependencies {
     implementation("org.megamek:megamek:0.49.15-SNAPSHOT")
     implementation("org.megamek:megameklab:0.49.15-SNAPSHOT")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1")
 }
 
 application {
