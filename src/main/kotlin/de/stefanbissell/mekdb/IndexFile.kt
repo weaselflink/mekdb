@@ -22,6 +22,18 @@ fun createIndexFile(mechs: List<MechEntry>) {
                 input(classes = "search", type = InputType.text) {
                     attributes["placeholder"] = "Search..."
                 }
+                select(classes = "tech") {
+                    option { +"All" }
+                    option { +"IS" }
+                    option { +"Clan" }
+                }
+                select(classes = "level") {
+                    option { +"All" }
+                    option { +"Int" }
+                    option { +"Adv" }
+                    option { +"Exp" }
+                    option { +"Un" }
+                }
             }
             table {
                 thead {
