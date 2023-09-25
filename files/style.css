@@ -1,0 +1,35 @@
+
+.filters {
+	padding: 20px;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+td,
+th {
+	padding: 5px 10px;
+	border: 1px solid black;
+}
+
+thead tr {
+	background-color: lightblue;
+}
+
+tbody tr:nth-child(2n + 0 of :not(tr.hidden)) {
+	background-color: beige;
+}
+
+tbody tr td.mass,
+tbody tr td.armor {
+	text-align: right;
+}
+
+tbody tr td.speed {
+	text-align: center;
+}
+
+tbody tr.hidden {
+	display: none;
+}

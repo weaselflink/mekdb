@@ -1,8 +1,5 @@
 package de.stefanbissell.mekdb
 
-import kotlinx.html.*
-import kotlinx.html.dom.createHTMLDocument
-import kotlinx.html.dom.write
 import megamek.common.Mech
 import megamek.common.loaders.MtfFile
 import megameklab.printing.PaperSize
@@ -15,6 +12,10 @@ import java.util.zip.ZipInputStream
 
 fun main() {
     Locale.setDefault(Locale.US)
+
+    File("files/style.css").copyTo(File("webpage/style.css"), overwrite = true)
+    File("files/main.js").copyTo(File("webpage/main.js"), overwrite = true)
+
     val mechs = ZipInputStream(FileInputStream("data/megamek-0.49.14.zip")).use { zip ->
         generateSequence { zip.nextEntry }
             .filter { !it.isDirectory }
@@ -25,50 +26,15 @@ fun main() {
                 zip.closeEntry()
                 readMechFile(path, ByteArrayInputStream(bytes))
             }
-            .filter { it.mech.isIntroLevel }
-            .filter { it.path == "3039u" }
+            .filter { it.path in listOf("3039u", "3050U", "3055U", "3058Uu") }
             .toList()
-            .subList(0, 50)
+            .sortedBy { it.mech.model }
     }
     createIndexFile(mechs)
     mechs.forEach {
-        println("${it.mech.model} --- ${it.mech.chassis}")
+        println("${it.path}/${it.filename}.mtf")
         storeRecordSheet(it)
     }
-}
-
-private fun createIndexFile(mechs: List<MechEntry>) {
-    val file = File("webpage/index.html")
-    val fileWriter = FileWriter(file)
-
-    val content = createHTMLDocument().html {
-        body {
-            table {
-                thead {
-                    tr {
-                        th { +"Model" }
-                        th { +"Name" }
-                        th { +"Tonnage" }
-                        th { +"Sheet" }
-                    }
-                }
-                tbody {
-                    mechs.forEach {
-                        val mech = it.mech
-                        tr {
-                            td { +mech.model }
-                            td { +mech.chassis }
-                            td { +mech.weight.toInt().toString() }
-                            td { a(href = "mechs/${it.path}/${it.filename.removeSuffix(".mtf")}.pdf") { +"PDF" } }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fileWriter.write(content, prettyPrint = true)
-    fileWriter.close()
 }
 
 private fun readMechFile(path: String, stream: InputStream): MechEntry {
@@ -76,7 +42,7 @@ private fun readMechFile(path: String, stream: InputStream): MechEntry {
     val shortPath = path.substringAfterLast("mechfiles/mechs/")
     return MechEntry(
         path = shortPath.substringBeforeLast("/"),
-        filename = shortPath.substringAfterLast("/"),
+        filename = shortPath.substringAfterLast("/").removeSuffix(".mtf"),
         mech = mech
     )
 }
@@ -95,7 +61,7 @@ private fun storeRecordSheet(entry: MechEntry) {
     )
     val stream = pdf.exportPDF(0, PageFormat().also { it.paper = options.paperSize.createPaper() })
 
-    val file = File("webpage/mechs/${entry.path}/${entry.filename.removeSuffix(".mtf")}.pdf")
+    val file = File("webpage/mechs/${entry.path}/${entry.filename}.pdf")
     file.parentFile.mkdirs()
     val out = FileOutputStream(file)
 
