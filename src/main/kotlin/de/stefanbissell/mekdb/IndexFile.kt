@@ -39,8 +39,8 @@ fun createIndexFile(mechs: List<MechEntry>) {
             table {
                 thead {
                     tr {
-                        th { +"Model" }
                         th { +"Name" }
+                        th { +"Model" }
                         th { +"Tech" }
                         th { +"Level" }
                         th { +"Mass" }
@@ -54,8 +54,8 @@ fun createIndexFile(mechs: List<MechEntry>) {
                     mechs.forEach {
                         val mech = it.mech
                         tr {
-                            td(classes = "model") { +mech.model }
                             td(classes = "chassis") { +mech.chassis }
+                            td(classes = "model") { +mech.model }
                             td(classes = "tech") { +(if (mech.isClan) "Clan" else "IS") }
                             td(classes = "level") { +techLevelSummary(mech) }
                             td(classes = "mass") { +mech.weight.toInt().toString() }

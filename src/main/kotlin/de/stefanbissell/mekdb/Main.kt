@@ -16,7 +16,7 @@ fun main() {
     File("files/style.css").copyTo(File("webpage/style.css"), overwrite = true)
     File("files/main.js").copyTo(File("webpage/main.js"), overwrite = true)
 
-    val mechs = ZipInputStream(FileInputStream("data/megamek-0.49.14.zip")).use { zip ->
+    val mechs = ZipInputStream(FileInputStream("data/megameklab-0.49.14.zip")).use { zip ->
         generateSequence { zip.nextEntry }
             .filter { !it.isDirectory }
             .filter { it.name.endsWith("mtf") }
@@ -26,15 +26,15 @@ fun main() {
                 zip.closeEntry()
                 readMechFile(path, ByteArrayInputStream(bytes))
             }
-            .filter { it.path in listOf("3039u", "3050U", "3055U", "3058Uu") }
             .toList()
-            .sortedBy { it.mech.model }
+            .sortedBy { it.mech.chassis }
     }
     createIndexFile(mechs)
     mechs.forEach {
         println("${it.path}/${it.filename}.mtf")
         storeRecordSheet(it)
     }
+    println(mechs.count())
 }
 
 private fun readMechFile(path: String, stream: InputStream): MechEntry {
