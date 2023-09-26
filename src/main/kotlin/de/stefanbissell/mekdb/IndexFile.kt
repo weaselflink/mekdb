@@ -22,11 +22,13 @@ fun createIndexFile(mechs: List<MechEntry>) {
                 input(classes = "search", type = InputType.text) {
                     attributes["placeholder"] = "Search..."
                 }
+                span { +"Tech" }
                 select(classes = "tech") {
                     option { +"All" }
                     option { +"IS" }
                     option { +"Clan" }
                 }
+                span { +"Rules" }
                 select(classes = "level") {
                     option { +"All" }
                     option { +"Int" }
@@ -47,6 +49,7 @@ fun createIndexFile(mechs: List<MechEntry>) {
                         th { +"Speed" }
                         th { +"Armor" }
                         th { +"Weapons" }
+                        th { +"Year" }
                         th { +"Sheet" }
                     }
                 }
@@ -56,12 +59,13 @@ fun createIndexFile(mechs: List<MechEntry>) {
                         tr {
                             td(classes = "chassis") { +mech.chassis }
                             td(classes = "model") { +mech.model }
-                            td(classes = "tech") { +(if (mech.isClan) "Clan" else "IS") }
-                            td(classes = "level") { +techLevelSummary(mech) }
+                            td(classes = "tech") { +mech.techBaseSummary() }
+                            td(classes = "level") { +mech.rulesLevelSummary() }
                             td(classes = "mass") { +mech.weight.toInt().toString() }
-                            td(classes = "speed") { +speedSummary(mech) }
+                            td(classes = "speed") { +mech.speedSummary() }
                             td(classes = "armor") { +mech.totalArmor.toString() }
-                            td(classes = "weapons") { +weaponSummary(mech) }
+                            td(classes = "weapons") { +mech.weaponSummary() }
+                            td(classes = "weapons") { +mech.year.toString() }
                             td {
                                 a(
                                     href = "mechs/${it.path}/${it.filename}.pdf",
@@ -80,8 +84,24 @@ fun createIndexFile(mechs: List<MechEntry>) {
     fileWriter.close()
 }
 
-private fun techLevelSummary(mech: Mech): String {
-    return when (mech.staticTechLevel) {
+private fun Mech.techBaseSummary(): String {
+    return if (isMixedTech) {
+        if (isClan) {
+            "Mixed Clan"
+        } else {
+            "Mixed IS"
+        }
+    } else {
+        if (isClan) {
+            "Clan"
+        } else {
+            "IS"
+        }
+    }
+}
+
+private fun Mech.rulesLevelSummary(): String {
+    return when (staticTechLevel) {
         SimpleTechLevel.INTRO -> "Int"
         SimpleTechLevel.STANDARD -> "Std"
         SimpleTechLevel.ADVANCED -> "Adv"
@@ -91,12 +111,12 @@ private fun techLevelSummary(mech: Mech): String {
     }
 }
 
-private fun speedSummary(mech: Mech): String {
-    return "${mech.walkMP}/${mech.runMP}/${mech.jumpMP}"
+private fun Mech.speedSummary(): String {
+    return "$walkMP/$runMP/$jumpMP"
 }
 
-private fun weaponSummary(mech: Mech): String {
-    return mech.weaponList
+private fun Mech.weaponSummary(): String {
+    return weaponList
         .groupBy { it.shortName }
         .map { (_, list) -> WeaponEntry(list.first(), list.size) }
         .sortedBy { it.mounted.tonnage }

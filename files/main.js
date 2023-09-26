@@ -19,7 +19,7 @@ const applyFilters = (row) => {
 	}
 
 	if (filters.tech !== "All") {
-		if (tech !== filters.tech) {
+		if (!tech.includes(filters.tech)) {
 			return false;
 		}
 	}
