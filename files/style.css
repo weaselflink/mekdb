@@ -7,6 +7,9 @@ body {
 .filters {
 	padding: 20px;
 	position: fixed;
+	top: 0;
+	width: 100%;
+	background-color: white;
 }
 
 .filters span {
@@ -18,6 +21,7 @@ body {
 }
 
 table {
+	margin-top: 70px;
 	border-collapse: collapse;
 }
 
