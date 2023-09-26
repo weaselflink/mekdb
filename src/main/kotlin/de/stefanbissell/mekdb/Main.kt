@@ -7,16 +7,23 @@ import megameklab.printing.PrintMech
 import megameklab.printing.RecordSheetOptions
 import java.awt.print.PageFormat
 import java.io.*
+import java.net.URL
 import java.util.*
 import java.util.zip.ZipInputStream
 
 fun main() {
     Locale.setDefault(Locale.US)
 
+    val dataDir = File("data")
+    dataDir.mkdirs()
+    val mekLabJar = File(dataDir, "megameklab-0.49.14.zip")
+
+    downloadData(mekLabJar)
+
     File("files/style.css").copyTo(File("webpage/style.css"), overwrite = true)
     File("files/main.js").copyTo(File("webpage/main.js"), overwrite = true)
 
-    val mechs = ZipInputStream(FileInputStream("data/megameklab-0.49.14.zip")).use { zip ->
+    val mechs = ZipInputStream(FileInputStream(mekLabJar)).use { zip ->
         generateSequence { zip.nextEntry }
             .filter { !it.isDirectory }
             .filter { it.name.endsWith("mtf") }
@@ -35,6 +42,16 @@ fun main() {
         storeRecordSheet(it)
     }
     println(mechs.count())
+}
+
+private fun downloadData(mekLabJar: File) {
+    if (!mekLabJar.exists()) {
+        val mekLabJarUrl = URL("https://github.com/MegaMek/megameklab/archive/refs/tags/v0.49.14.zip")
+        println("Downloading $mekLabJarUrl")
+        mekLabJarUrl.openStream().use {
+            it.copyTo(FileOutputStream(mekLabJar))
+        }
+    }
 }
 
 private fun readMechFile(path: String, stream: InputStream): MechEntry {
